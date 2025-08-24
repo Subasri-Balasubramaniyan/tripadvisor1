@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TripExplorer — Travel smarter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ----------------------------------------------
+       TripAdvisor‑inspired static clone (HTML + CSS only)
+       Notes:
+       1) Purely educational. No logos/branding/content copied.
+       2) Replace placeholder images and copy with your assets.
+       3) You can move the CSS below into style.css if you prefer.
+       ---------------------------------------------- */
+
+    :root{
+      --bg: #ffffff;
+      --bg-soft: #f6f7f8;
+      --text: #0b1419;
+      --muted: #5b6b73;
+      --brand: #34e0a1; /* fresh mint green reminiscent (not identical) */
+      --brand-dark: #00a36d;
+      --chip: #e8f8f1;
+      --card: #ffffff;
+      --border: #e6eaed;
+      --shadow: 0 8px 24px rgba(16,24,40,.06);
+      --radius: 18px;
+      --radius-lg: 28px;
+      --container: 1200px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+    img{ max-width: 100%; display: block; border-radius: 14px; }
+
+    .container{ width: min(var(--container), 100%); margin: 0 auto; padding: 0 20px; }
+
+    /* Top utility bar */
+    .topbar{
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 30;
+      backdrop-filter: saturate(180%) blur(8px);
+    }
+    .topbar-inner{ display: flex; align-items: center; gap: 16px; padding: 14px 0; }
+    .logo{
+      display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: -0.3px;
+    }
+    .logo-badge{
+      width: 36px; height: 36px; border-radius: 50%; background: var(--brand);
+      display: grid; place-items: center; font-weight: 900; color: #043b29;
+      box-shadow: inset 0 0 0 2px #0d6147;
+    }
+    .searchbar{
+      flex: 1; display: flex; align-items: center; gap: 10px; background: var(--bg-soft);
+      border: 1px solid var(--border); padding: 10px 12px; border-radius: 999px;
+    }
+    .searchbar input{
+      border: none; outline: none; background: transparent; width: 100%; font-size: 14px;
+    }
+    .chip{ padding: 8px 12px; background: var(--chip); border-radius: 999px; color: #065f46; font-weight: 600; font-size: 13px; }
+    .nav{ margin-left: auto; display: flex; align-items: center; gap: 16px; }
+    .nav a{ color: var(--text); font-weight: 600; font-size: 14px; opacity: .9; }
+    .cta{ background: var(--text); color: #fff; padding: 10px 14px; border-radius: 999px; font-weight: 700; }
+
+    /* Primary tabs */
+    .tabs{
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .tabs-inner{ display: flex; gap: 18px; padding: 10px 0; overflow:auto; }
+    .tab{
+      padding: 10px 14px; border-radius: 999px; background: transparent; border: 1px solid transparent;
+      font-weight: 600; white-space: nowrap; color: var(--muted);
+    }
+    .tab.active{ background: var(--bg-soft); color: var(--text); border-color: var(--border); }
+
+    /* Hero */
+    .hero{ background: linear-gradient(180deg, #eefaf4, #fff); }
+    .hero-inner{ display: grid; grid-template-columns: 1.3fr .7fr; gap: 24px; padding: 30px 0 24px; align-items: center; }
+    .headline{ font-size: clamp(28px, 4vw, 44px); line-height: 1.1; letter-spacing: -.5px; margin: 8px 0 6px; }
+    .sub{ color: var(--muted); font-weight: 500; margin-bottom: 16px; }
+    .hero-form{
+      background: #fff; padding: 12px; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow);
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .hero-form input{ flex: 1; min-width: 220px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); }
+    .hero-form .btn{
+      padding: 14px 18px; border-radius: 12px; border: none; background: var(--brand); color: #053c29; font-weight: 800; cursor: pointer;
+    }
+    .hero-side img{ aspect-ratio: 4/3; object-fit: cover; }
+
+    /* Sections */
+    section{ padding: 34px 0; }
+    .section-head{ display:flex; align-items: end; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+    .section-head h2{ margin: 0; font-size: clamp(20px, 2.8vw, 28px); letter-spacing: -0.2px; }
+    .section-head p{ margin: 0; color: var(--muted); }
+
+    .grid{
+      display: grid; gap: 16px; grid-template-columns: repeat(12, 1fr);
+    }
+    .col-3{ grid-column: span 3; }
+    .card{
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+      transition: transform .2s ease;
+    }
+    .card:hover{ transform: translateY(-3px); }
+    .card-body{ padding: 12px; }
+    .card-title{ font-weight: 700; margin: 4px 0; }
+    .rating{ display: flex; align-items: center; gap: 6px; color: #065f46; font-weight: 700; }
+    .pill{ background: var(--bg-soft); padding: 6px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+
+    /* Wide banner */
+    .banner{
+      background: #0b1419; color: #fff; border-radius: var(--radius-lg); padding: 28px; display: grid; gap: 18px; grid-template-columns: 1fr 2fr; align-items: center;
+    }
+    .banner img{ border-radius: 16px; height: 100%; object-fit: cover; aspect-ratio: 16/9; }
+    .banner .btn{ background: #fff; color: #0b1419; font-weight: 800; padding: 12px 16px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; }
+
+    /* Footer */
+    footer{ background: var(--bg-soft); border-top: 1px solid var(--border); margin-top: 28px; }
+    .footer-grid{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 28px 0; }
+    .footer-grid h4{ margin: 0 0 10px; }
+    .footer-grid a{ display: block; color: var(--muted); font-size: 14px; margin: 6px 0; }
+    .subfooter{ border-top: 1px solid var(--border); padding: 16px 0; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+    .language{ display: flex; gap: 10px; align-items: center; }
+    .badge{ padding: 8px 10px; background: #fff; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; }
+
+    /* Responsive */
+    @media (max-width: 1000px){
+      .hero-inner{ grid-template-columns: 1fr; }
+      .hero-side{ order: -1; }
+      .col-3{ grid-column: span 6; }
+      .footer-grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px){
+      .topbar-inner{ flex-wrap: wrap; }
+      .nav{ width: 100%; justify-content: space-between; }
+      .col-3{ grid-column: span 12; }
+      .banner{ grid-template-columns: 1fr; }
+    }
+    .cta{
+        background-color: white;
+    }
+  </style>
+</head>
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="logo" href="#">
+        <span class="logo-badge">TE</span>
+        <span>TripExplorer</span>
+      </a>
+      <div class="searchbar" role="search">
+        <span aria-hidden="true">🔎</span>
+        <input type="text" placeholder="Where to? Search destinations, hotels, things to do…" />
+        <span class="chip">Find deals</span>
+      </div>
+      <nav class="nav" aria-label="Primary">
+        <a href="#">Discover</a>
+        <a href="#">Trips</a>
+        <a href="#">Review</a>
+        <a href="#">More</a>
+        <a class="cta" href="#">Sign in</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PRIMARY TABS -->
+  <div class="tabs">
+    <div class="container tabs-inner">
+      <button class="tab active">Hotels</button>
+      <button class="tab">Things to do</button>
+      <button class="tab">Restaurants</button>
+      <button class="tab">Holiday Homes</button>
+      <button class="tab">Flights</button>
+      <button class="tab">Cruises</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="pill">Plan smarter</div>
+        <h1 class="headline">Find your next unforgettable trip</h1>
+        <p class="sub">Search top-rated stays, epic eats, and must‑do experiences—all in one place.</p>
+        <form class="hero-form" action="#" method="get">
+          <input type="text" placeholder="Destination or property name" aria-label="Destination" />
+          <input type="text" placeholder="Check‑in — Check‑out" aria-label="Dates" />
+          <input type="text" placeholder="2 adults · 1 room" aria-label="Guests" />
+          <button class="btn" type="submit">Search</button>
+        </form>
+      </div>
+      <div class="hero-side">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop" alt="Scenic travel collage" />
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <!-- POPULAR DESTINATIONS -->
+    <section class="container">
+      <div class="section-head">
+        <h2>Popular right now</h2>
+        <p>Trending cities and beach escapes</p>
+      </div>
+      <div class="grid">
+        <!-- Card 1 -->
+        <article class="card col-3">
+          <img src="https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&w=1200&auto=format&fit=crop" alt="Goa beach at sunset" />
+          <div class="card-body">
+            <div class="card-title">Goa</div>
+            <div class="rating">★ 4.7 <span class="pill">Beaches</span></div>
+          </div>
+        </article>
+        <!-- Card 2 -->
+        <article class="card col-3">
+          <img src="https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=1200&auto=format&fit=crop" alt="Jaipur palace architecture" />
+          <div class="card-body">
+            <div class="card-title">Jaipur</div>
+            <div class="rating">★ 4.6 <span class="pill">Culture</span></div>
+          </div>
+        </article>
+        <!-- Card 3 -->
+        <article class="card col-3">
+          <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1200&auto=format&fit=crop" alt="Manali mountains" />
+          <div class="card-body">
+            <div class="card-title">Manali</div>
+            <div class="rating">★ 4.8 <span class="pill">Adventure</span></div>
+          </div>
+        </article>
+        <!-- Card 4 -->
+        <article class="card col-3">
+          <img src="./images/pondy.jpg" alt="Pondicherry colorful street" />
+          <div class="card-body">
+            <div class="card-title">Puducherry</div>
+            <div class="rating">★ 4.5 <span class="pill">Boutique</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- TOP EXPERIENCES -->
+    <section class="container">
+      <div class="section-head">
+        <h2>Top experiences</h2>
+        <p>Book memorable activities from sunrise to supper</p>
+      </div>
+      <div class="grid">
+        <article class="card col-3">
+          <img src="./images/desert.jpg" alt="Desert safari" />
+          <div class="card-body">
+            <div class="card-title">Desert safari & dunes</div>
+            <div class="rating">★ 4.9 <span class="pill">Free cancellation</span></div>
+          </div>
+        </article>
+        <article class="card col-3">
+          <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200&auto=format&fit=crop" alt="Street food tour" />
+          <div class="card-body">
+            <div class="card-title">Old‑town food walk</div>
+            <div class="rating">★ 4.7 <span class="pill">Small groups</span></div>
+          </div>
+        </article>
+        <article class="card col-3">
+          <img src="./images/islan.jpg" alt="Island boat" />
+          <div class="card-body">
+            <div class="card-title">Island boat cruise</div>
+            <div class="rating">★ 4.8 <span class="pill">Best seller</span></div>
+          </div>
+        </article>
+        <article class="card col-3">
+          <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=1200&auto=format&fit=crop" alt="Temple tour" />
+          <div class="card-body">
+            <div class="card-title">Heritage & temples</div>
+            <div class="rating">★ 4.6 <span class="pill">Skip‑the‑line</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- INSPIRATION BANNER -->
+    <section class="container">
+      <div class="banner">
+        <div>
+          <h2 style="margin:0 0 6px">Make your dream trip happen</h2>
+          <p style="margin:0 0 14px; color:#d2d9df">Use filters to compare stays by price, rating, amenities, and more.</p>
+          <a class="btn" href="#">Start planning <span aria-hidden="true">→</span></a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?q=80&w=1600&auto=format&fit=crop" alt="Cozy boutique hotel lobby" />
+      </div>
+    </section>
+
+    <!-- NEAR YOU -->
+    <section class="container">
+      <div class="section-head">
+        <h2>Near you</h2>
+        <p>Hidden gems around your location</p>
+      </div>
+      <div class="grid">
+        <article class="card col-3">
+          <img src="./images/museum.jpg" alt="Museum exhibit" />
+          <div class="card-body">
+            <div class="card-title">City Museum</div>
+            <div class="rating">★ 4.5 <span class="pill">Tickets from ₹199</span></div>
+          </div>
+        </article>
+        <article class="card col-3">
+          <img src="./images/garden.jpg" alt="Garden" />
+          <div class="card-body">
+            <div class="card-title">Botanical Gardens</div>
+            <div class="rating">★ 4.4 <span class="pill">Open today</span></div>
+          </div>
+        </article>
+        <article class="card col-3">
+          <img src="./images/aqua.jpg" alt="Aquarium" />
+          <div class="card-body">
+            <div class="card-title">Aquarium</div>
+            <div class="rating">★ 4.6 <span class="pill">Family friendly</span></div>
+          </div>
+        </article>
+        <article class="card col-3">
+          <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1200&auto=format&fit=crop" alt="Park" />
+          <div class="card-body">
+            <div class="card-title">Central Park</div>
+            <div class="rating">★ 4.7 <span class="pill">Free</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <h4>About</h4>
+        <a href="#">How TripExplorer works</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <a href="#">Write a review</a>
+        <a href="#">Travel articles</a>
+        <a href="#">Help Center</a>
+      </div>
+      <div>
+        <h4>Business</h4>
+        <a href="#">Owners</a>
+        <a href="#">Advertise</a>
+        <a href="#">Affiliate</a>
+      </div>
+      <div>
+        <h4>Get the app</h4>
+        <a href="#">iOS</a>
+        <a href="#">Android</a>
+        <a href="#">Web app</a>
+      </div>
+    </div>
+    <div class="container subfooter">
+      <div class="language">
+        <span class="badge">🌐 English (IN)</span>
+        <span class="badge">₹ INR</span>
+      </div>
+      <div style="color:var(--muted); font-size:14px">© 2025 TripExplorer. Educational clone UI.</div>
+    </div>
+  </footer>
+</body>
+</html>
